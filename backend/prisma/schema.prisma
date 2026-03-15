@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Stock {
+  id        Int      @id @default(autoincrement())
+  symbol    String   @unique
+  name      String
+  sector    String?
+  industry  String?
+  createdAt DateTime @default(now())
+
+  dailyPrices DailyPrice[]
+  earnings    EarningResult[]
+  patterns    Pattern[]
+}
+
+model DailyPrice {
+  id        Int      @id @default(autoincrement())
+  stockId   Int
+  date      DateTime
+  open      Decimal
+  high      Decimal
+  low       Decimal
+  close     Decimal
+  volume    BigInt
+  createdAt DateTime @default(now())
+  stock     Stock    @relation(fields: [stockId], references: [id])
+
+  @@unique([stockId, date])
+}
+
+model EarningResult {
+  id          Int      @id @default(autoincrement())
+  stockId     Int
+  quarter     String
+  revenue     Decimal?
+  netProfit   Decimal?
+  eps         Decimal?
+  yoyGrowth   Decimal?
+  announcedAt DateTime
+  createdAt   DateTime @default(now())
+  stock       Stock    @relation(fields: [stockId], references: [id])
+
+  @@unique([stockId, quarter])
+}
+
+model Pattern {
+  id         Int      @id @default(autoincrement())
+  stockId    Int
+  date       DateTime
+  type       String
+  confidence Decimal
+  notes      String?
+  createdAt  DateTime @default(now())
+  stock      Stock    @relation(fields: [stockId], references: [id])
+}

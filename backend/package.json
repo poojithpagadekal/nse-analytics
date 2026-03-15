@@ -13,9 +13,11 @@
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
+    "@prisma/client": "^6.19.2",
     "@types/express": "^5.0.6",
     "@types/node": "^25.5.0",
     "nodemon": "^3.1.14",
+    "prisma": "^6.19.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   },
