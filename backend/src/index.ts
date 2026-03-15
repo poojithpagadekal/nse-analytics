@@ -1,8 +1,38 @@
 import app from "./app";
-import { ENV } from "./config/env";
+import { env } from "./config/env";
+import { prisma } from "./config/prisma";
+import { redis } from "./config/redis";
 
-const PORT = ENV.PORT || 3000;
+async function bootstrap() {
+  await prisma.$connect();
+  console.log("Postgres connected");
 
-app.listen(PORT, () => {
-  console.log(`Server is running on ${PORT}`);
+  await redis.ping();
+  console.log("Redis connected");
+
+  const server = app.listen(env.PORT, () => {
+    console.log(`Server is running on port ${env.PORT} [${env.NODE_ENV}]`);
+  });
+
+  const shutdown = async (signal: string) => {
+    console.log(`\n${signal} - shutting down`);
+    server.close(async () => {
+      try {
+        await prisma.$disconnect();
+        redis.disconnect();
+      } catch (err) {
+        console.error("Error during cleanup:", err);
+      } finally {
+        process.exit(0);
+      }
+    });
+  };
+
+  process.on("SIGTERM", () => shutdown("SIGTERM"));
+  process.on("SIGINT", () => shutdown("SIGINT"));
+}
+
+bootstrap().catch((err) => {
+  console.error("Bootstrap failed:", err);
+  process.exit(1);
 });
