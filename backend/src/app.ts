@@ -6,6 +6,7 @@ import { env } from "./config/env";
 import { healthRouter } from "./lib/health";
 import { stocksRouter } from "./modules/stocks/stocks.router";
 import { errorHandler } from "./lib/errorHandler";
+import { earningsRouter } from "./modules/earnings/earning.router";
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(express.json());
 
 app.use("/health", healthRouter);
 app.use("/stocks", stocksRouter);
+app.use("/earnings", earningsRouter);
 
 app.use((_req, res) => {
   res.status(404).json({ error: "Not found" });
