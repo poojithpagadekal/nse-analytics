@@ -23,6 +23,7 @@ model Stock {
   dailyPrices DailyPrice[]
   earnings    EarningResult[]
   patterns    Pattern[]
+  alerts      Alert[]
 }
 
 model DailyPrice {
@@ -64,4 +65,16 @@ model Pattern {
   notes      String?
   createdAt  DateTime @default(now())
   stock      Stock    @relation(fields: [stockId], references: [id])
+}
+
+model Alert {
+  id          Int       @id @default(autoincrement())
+  stockId     Int
+  type        String
+  condition   String
+  threshold   Decimal
+  isActive    Boolean   @default(true)
+  triggeredAt DateTime?
+  createdAt   DateTime  @default(now())
+  stock       Stock     @relation(fields: [stockId], references: [id])
 }
