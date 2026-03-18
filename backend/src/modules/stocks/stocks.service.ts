@@ -25,8 +25,34 @@ const createStock = async (data: Prisma.StockCreateInput) => {
   });
 };
 
+const getDailyPrices = async (symbol: string, from?: string, to?: string) => {
+  return prisma.dailyPrice.findMany({
+    where: {
+      stock: { symbol: symbol.toUpperCase() },
+      ...(from || to
+        ? {
+            date: {
+              ...(from ? { gte: new Date(from) } : {}),
+              ...(to ? { lte: new Date(to) } : {}),
+            },
+          }
+        : {}),
+    },
+    orderBy: { date: "asc" },
+    select: {
+      date: true,
+      open: true,
+      high: true,
+      low: true,
+      close: true,
+      volume: true,
+    },
+  });
+};
+
 export const stocksService = {
   getAllStocks,
   getStockBySymbol,
   createStock,
+  getDailyPrices,
 };
