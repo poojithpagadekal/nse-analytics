@@ -2,6 +2,7 @@ import app from "./app";
 import { env } from "./config/env";
 import { prisma } from "./config/prisma";
 import { redis } from "./config/redis";
+import { bhavcopyWorker } from "./workers/bhavcopy.worker";
 
 async function bootstrap() {
   await prisma.$connect();
@@ -18,6 +19,7 @@ async function bootstrap() {
     console.log(`\n${signal} - shutting down`);
     server.close(async () => {
       try {
+        await bhavcopyWorker.close();
         await prisma.$disconnect();
         redis.disconnect();
       } catch (err) {

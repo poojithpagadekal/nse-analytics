@@ -1,7 +1,7 @@
 import Redis from "ioredis";
 import { env } from "./env";
 
-const redisConfig = {
+export const redisConfig = {
   host: "localhost",
   port: 6379,
   password: env.REDIS_PASSWORD,

@@ -8,6 +8,7 @@ import { stocksRouter } from "./modules/stocks/stocks.router";
 import { errorHandler } from "./lib/errorHandler";
 import { earningsRouter } from "./modules/earnings/earning.router";
 import { alertsRouter } from "./modules/alerts/alerts.router";
+import { ingestRouter } from "./lib/ingest.router";
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use("/health", healthRouter);
 app.use("/stocks", stocksRouter);
 app.use("/earnings", earningsRouter);
 app.use("/alerts", alertsRouter);
+app.use("/ingest", ingestRouter);
 
 app.use((_req, res) => {
   res.status(404).json({ error: "Not found" });
