@@ -1,7 +1,11 @@
 import { Request, Response } from "express";
 import { stocksService } from "./stocks.service";
 import { asyncHandler } from "../../lib/errorHandler";
-import { createStockSchema, symbolParamSchema } from "./stocks.schema";
+import {
+  createStockSchema,
+  priceQuerySchema,
+  symbolParamSchema,
+} from "./stocks.schema";
 import { NotFoundError, ValidationError } from "../../lib/errors";
 
 type StockParams = {
@@ -32,6 +36,17 @@ const createStock = asyncHandler(async (req: Request, res: Response) => {
 
   const stock = await stocksService.createStock(parsed.data);
   res.status(201).json(stock);
+});
+
+const getDailyPrices = asyncHandler(async (req: Request, res: Response) => {
+  const { symbol } = symbolParamSchema.parse(req.params);
+  const { from, to } = priceQuerySchema.parse(req.query);
+
+  const stock = await stocksService.getStockBySymbol(symbol);
+  if (!stock) throw new ValidationError(`Stock ${symbol}`);
+
+  const prices = await stocksService.getDailyPrices(symbol, from, to);
+  res.status(200).json(prices);
 });
 
 export const stocksController = {
