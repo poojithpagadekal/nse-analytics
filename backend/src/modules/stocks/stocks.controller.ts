@@ -53,4 +53,5 @@ export const stocksController = {
   getAllStocks,
   getStockBySymbol,
   createStock,
+  getDailyPrices,
 };

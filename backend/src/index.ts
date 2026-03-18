@@ -4,6 +4,10 @@ import { prisma } from "./config/prisma";
 import { redis } from "./config/redis";
 import { bhavcopyWorker } from "./workers/bhavcopy.worker";
 
+(BigInt.prototype as any).toJSON = function(){
+  return this.toString();
+}
+
 async function bootstrap() {
   await prisma.$connect();
   console.log("Postgres connected");

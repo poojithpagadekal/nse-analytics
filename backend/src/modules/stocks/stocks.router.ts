@@ -6,3 +6,4 @@ export const stocksRouter = Router();
 stocksRouter.get("/", stocksController.getAllStocks);
 stocksRouter.get("/:symbol", stocksController.getStockBySymbol);
 stocksRouter.post("/", stocksController.createStock);
+stocksRouter.get("/:symbol/prices",stocksController.getDailyPrices);
