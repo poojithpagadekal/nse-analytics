@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { alertsApi } from "../api/alerts";
 
 export const useAlerts = (symbol?: string, isActive?: boolean) => {
-  useQuery({
+  return useQuery({
     queryKey: ["alerts", symbol, isActive],
     queryFn: () => alertsApi.getAll(symbol, isActive),
   });
