@@ -120,12 +120,15 @@ export function StocksPage() {
 
           {getPageNumbers(page, totalPages).map((p, i) =>
             p === "..." ? (
-              <span key={i} className="text-xs text-gray-400 px-1">
+              <span
+                key={`ellipsis-${i}`}
+                className="text-xs text-gray-400 px-1"
+              >
                 …
               </span>
             ) : (
               <PaginationBtn
-                key={p}
+                key={`page-${p}`}
                 onClick={() => setPage(p as number)}
                 active={page === p}
               >
