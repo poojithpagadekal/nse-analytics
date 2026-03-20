@@ -5,6 +5,7 @@ import {
   processBhavcopyJob,
   BhavcopyJobData,
 } from "./processors/bhavcopy.processor";
+import { getSocket } from "../config/socket";
 
 export const bhavcopyWorker = new Worker<BhavcopyJobData>(
   BHAVCOPY_QUEUE,
@@ -14,6 +15,9 @@ export const bhavcopyWorker = new Worker<BhavcopyJobData>(
     await job.updateProgress(0);
     await processBhavcopyJob(job.data);
     await job.updateProgress(100);
+
+    getSocket().emit(`prices:updated`, { date: job.data.date });
+    console.log(`[Worker] Emitted prices:updated for ${job.data.date}`);
 
     console.log(`[Worker] Completed job ${job.id}`);
   },

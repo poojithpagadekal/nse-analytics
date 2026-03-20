@@ -1,5 +1,6 @@
 import { NavLink, Outlet } from "react-router-dom";
 import { BarChart2, TrendingUp, Bell } from "lucide-react";
+import { useSocket } from "../hooks/useSocket";
 
 const navItems = [
   { to: "/stocks", label: "Stocks", icon: TrendingUp },
@@ -7,6 +8,7 @@ const navItems = [
 ];
 
 export function Layout() {
+  useSocket();
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: "#f6f7f9" }}>
       {/* Sidebar */}
