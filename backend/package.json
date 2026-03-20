@@ -15,8 +15,10 @@
   "devDependencies": {
     "@prisma/client": "^6.19.2",
     "@types/adm-zip": "^0.5.8",
+    "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/morgan": "^1.9.10",
     "@types/node": "^25.5.0",
     "@types/node-cron": "^3.0.11",
@@ -29,6 +31,7 @@
   "dependencies": {
     "adm-zip": "^0.5.16",
     "axios": "^1.13.6",
+    "bcryptjs": "^3.0.3",
     "bullmq": "^5.71.0",
     "cors": "^2.8.6",
     "csv-parse": "^6.2.0",
@@ -36,6 +39,7 @@
     "express": "^5.2.1",
     "helmet": "^8.1.0",
     "ioredis": "^5.10.0",
+    "jsonwebtoken": "^9.0.3",
     "morgan": "^1.10.1",
     "node-cron": "^4.2.1",
     "socket.io": "^4.8.3",
