@@ -12,6 +12,8 @@ const envSchema = z.object({
   CORS_ORIGIN: z.string().default("http://localhost:5173"),
   JWT_SECRET: z.string().min(10),
   JWT_EXPIRES_IN: z.string().default("7d"),
+  REDIS_HOST: z.string().default("localhost"),
+  REDIS_PORT: z.coerce.number().default(6379),
 });
 
 const parsed = envSchema.safeParse(process.env);
