@@ -11,6 +11,7 @@ import { alertsRouter } from "./modules/alerts/alerts.router";
 import { ingestRouter } from "./lib/ingest.router";
 import { bhavcopyWorker } from "./workers/bhavcopy.worker";
 import { startBhavcopyCron } from "./workers/bhavcopy.cron";
+import { authRouter } from "./modules/auth/auth.router";
 
 const app = express();
 startBhavcopyCron();
@@ -25,6 +26,7 @@ app.use("/stocks", stocksRouter);
 app.use("/earnings", earningsRouter);
 app.use("/alerts", alertsRouter);
 app.use("/ingest", ingestRouter);
+app.use("/auth", authRouter);
 
 app.use((_req, res) => {
   res.status(404).json({ error: "Not found" });

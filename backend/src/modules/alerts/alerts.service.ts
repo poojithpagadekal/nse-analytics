@@ -1,10 +1,11 @@
 import { prisma } from "../../config/prisma";
-import { NotFoundError } from "../../lib/errors";
+import { AppError, NotFoundError } from "../../lib/errors";
 import { CreateAlertInput, AlertQuery } from "./alerts.schema";
 
-const getAlerts = async (query: AlertQuery) => {
+const getAlerts = async (userId: number, query: AlertQuery) => {
   return prisma.alert.findMany({
     where: {
+      userId,
       ...(query.symbol && { stock: { symbol: query.symbol } }),
       ...(query.isActive !== undefined && { isActive: query.isActive }),
     },
@@ -13,7 +14,7 @@ const getAlerts = async (query: AlertQuery) => {
   });
 };
 
-const createAlert = async (data: CreateAlertInput) => {
+const createAlert = async (userId: number, data: CreateAlertInput) => {
   const stock = await prisma.stock.findUnique({
     where: { symbol: data.symbol },
   });
@@ -22,6 +23,7 @@ const createAlert = async (data: CreateAlertInput) => {
 
   return prisma.alert.create({
     data: {
+      userId,
       stockId: stock.id,
       type: data.type,
       condition: data.condition,
@@ -31,11 +33,13 @@ const createAlert = async (data: CreateAlertInput) => {
   });
 };
 
-const deactivateAlert = async (id: number) => {
+const deactivateAlert = async (userId: number, id: number) => {
   const alert = await prisma.alert.findUnique({ where: { id } });
 
   if (!alert) throw new NotFoundError(`Alert ${id}`);
-
+  if (alert.userId !== userId) {
+    throw new AppError("Forbidden", 403);
+  }
   return prisma.alert.update({
     where: { id },
     data: { isActive: false },

@@ -10,6 +10,8 @@ const envSchema = z.object({
   DATABASE_URL: z.string().url(),
   REDIS_PASSWORD: z.string().optional(),
   CORS_ORIGIN: z.string().default("http://localhost:5173"),
+  JWT_SECRET: z.string().min(10),
+  JWT_EXPIRES_IN: z.string().default("7d"),
 });
 
 const parsed = envSchema.safeParse(process.env);
