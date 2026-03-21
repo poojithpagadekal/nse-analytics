@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { Bell, Plus } from "lucide-react";
-import { useAlerts, useDeactivateAlert } from "../hooks/useAlerts";
+import {
+  useAlerts,
+  useDeactivateAlert,
+  useReactivateAlert,
+  useDeleteAlert,
+} from "../hooks/useAlerts";
 import { AlertCard } from "../components/alerts/AlertCard";
 import { CreateAlertForm } from "../components/alerts/CreateAlertForm";
 import { Spinner } from "../components/ui/Spinner";
@@ -10,6 +15,8 @@ export function AlertsPage() {
   const [showForm, setShowForm] = useState(false);
   const { data: alerts, isLoading } = useAlerts();
   const deactivateAlert = useDeactivateAlert();
+  const reactivateAlert = useReactivateAlert();
+  const deleteAlert = useDeleteAlert();
 
   const activeAlerts = alerts?.filter((a) => a.isActive) ?? [];
   const inactiveAlerts = alerts?.filter((a) => !a.isActive) ?? [];
@@ -57,6 +64,7 @@ export function AlertsPage() {
               key={alert.id}
               alert={alert}
               onDeactivate={() => deactivateAlert.mutate(alert.id)}
+              onDelete={() => deleteAlert.mutate(alert.id)}
             />
           ))}
         </div>
@@ -65,11 +73,16 @@ export function AlertsPage() {
       {inactiveAlerts.length > 0 && (
         <div>
           <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">
-            Deactivated
+            Inactive
           </h2>
           <div className="space-y-2">
             {inactiveAlerts.map((alert) => (
-              <AlertCard key={alert.id} alert={alert} inactive />
+              <AlertCard
+                key={alert.id}
+                alert={alert}
+                onReactivate={() => reactivateAlert.mutate(alert.id)}
+                onDelete={() => deleteAlert.mutate(alert.id)}
+              />
             ))}
           </div>
         </div>

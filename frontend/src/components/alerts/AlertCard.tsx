@@ -1,52 +1,50 @@
-import { Bell, BellOff, CheckCircle } from "lucide-react";
+import { Bell, BellOff, CheckCircle, Trash2, RefreshCw } from "lucide-react";
 import type { Alert } from "../../types";
 
-const ALERT_TYPES = [
-  { value: "EPS_GROWTH", label: "EPS Growth" },
-  { value: "REVENUE_GROWTH", label: "Revenue Growth" },
-  { value: "PATTERN_DETECTED", label: "Pattern Detected" },
-  { value: "PRICE_CHANGE", label: "Price Change" },
-];
+const ALERT_TYPES: Record<string, string> = {
+  EPS_GROWTH: "EPS Growth",
+  REVENUE_GROWTH: "Revenue Growth",
+  PATTERN_DETECTED: "Pattern Detected",
+  PRICE_CHANGE: "Price Change",
+};
 
-const CONDITIONS = [
-  { value: "GT", label: "Greater than" },
-  { value: "LT", label: "Less than" },
-  { value: "EQ", label: "Equal to" },
-];
+const CONDITIONS: Record<string, string> = {
+  GT: "Greater than",
+  LT: "Less than",
+  EQ: "Equal to",
+};
+
+interface AlertCardProps {
+  alert: Alert;
+  onDeactivate?: () => void;
+  onReactivate?: () => void;
+  onDelete?: () => void;
+}
 
 export function AlertCard({
   alert,
   onDeactivate,
-  inactive,
-}: {
-  alert: Alert;
-  onDeactivate?: () => void;
-  inactive?: boolean;
-}) {
-  const typeLabel =
-    ALERT_TYPES.find((t) => t.value === alert.type)?.label ?? alert.type;
-  const condLabel =
-    CONDITIONS.find((c) => c.value === alert.condition)?.label ??
-    alert.condition;
-
+  onReactivate,
+  onDelete,
+}: AlertCardProps) {
   return (
     <div
       className={`bg-white rounded-xl border p-4 flex items-center justify-between transition-all ${
-        inactive
-          ? "border-gray-100 opacity-50"
+        !alert.isActive
+          ? "border-gray-100 opacity-60"
           : "border-gray-100 hover:border-emerald-200 hover:shadow-sm"
       }`}
     >
       <div className="flex items-center gap-4">
         <div
           className={`w-9 h-9 rounded-xl flex items-center justify-center ${
-            inactive ? "bg-gray-50" : "bg-emerald-50"
+            alert.isActive ? "bg-emerald-50" : "bg-gray-50"
           }`}
         >
-          {inactive ? (
-            <BellOff size={16} className="text-gray-400" />
+          {alert.isActive ? (
+            <Bell className="h-4 w-4 text-emerald-500" />
           ) : (
-            <Bell size={16} className="text-emerald-500" />
+            <BellOff className="h-4 w-4 text-gray-400" />
           )}
         </div>
         <div>
@@ -55,10 +53,17 @@ export function AlertCard({
               {alert.stock.symbol}
             </span>
             <span className="text-xs text-gray-400">·</span>
-            <span className="text-xs text-gray-500">{typeLabel}</span>
+            <span className="text-xs text-gray-500">
+              {ALERT_TYPES[alert.type] ?? alert.type}
+            </span>
+            {!alert.isActive && (
+              <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
+                Inactive
+              </span>
+            )}
           </div>
           <p className="text-xs text-gray-400">
-            {condLabel}{" "}
+            {CONDITIONS[alert.condition] ?? alert.condition}{" "}
             <span className="font-mono font-medium text-gray-600">
               {alert.threshold}
             </span>
@@ -66,19 +71,40 @@ export function AlertCard({
         </div>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2">
         {alert.triggeredAt && (
           <div className="flex items-center gap-1.5 text-xs text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
-            <CheckCircle size={11} />
+            <CheckCircle className="h-3 w-3" />
             Triggered
           </div>
         )}
-        {!inactive && onDeactivate && (
+
+        {alert.isActive && onDeactivate && (
           <button
             onClick={onDeactivate}
-            className="text-xs text-gray-400 hover:text-red-500 transition-colors px-3 py-1.5 rounded-lg hover:bg-red-50"
+            className="text-xs text-gray-400 hover:text-orange-500 transition-colors px-3 py-1.5 rounded-lg hover:bg-orange-50"
           >
             Deactivate
+          </button>
+        )}
+
+        {!alert.isActive && onReactivate && (
+          <button
+            onClick={onReactivate}
+            className="flex items-center gap-1 text-xs text-emerald-500 hover:text-emerald-600 transition-colors px-3 py-1.5 rounded-lg hover:bg-emerald-50"
+          >
+            <RefreshCw className="h-3 w-3" />
+            Reactivate
+          </button>
+        )}
+
+        {onDelete && (
+          <button
+            onClick={onDelete}
+            className="flex items-center gap-1 text-xs text-gray-400 hover:text-red-500 transition-colors px-3 py-1.5 rounded-lg hover:bg-red-50"
+          >
+            <Trash2 className="h-3 w-3" />
+            Delete
           </button>
         )}
       </div>
