@@ -9,12 +9,9 @@ import { errorHandler } from "./lib/errorHandler";
 import { earningsRouter } from "./modules/earnings/earning.router";
 import { alertsRouter } from "./modules/alerts/alerts.router";
 import { ingestRouter } from "./lib/ingest.router";
-import { bhavcopyWorker } from "./workers/bhavcopy.worker";
-import { startBhavcopyCron } from "./workers/bhavcopy.cron";
 import { authRouter } from "./modules/auth/auth.router";
 
 const app = express();
-startBhavcopyCron();
 
 app.use(helmet());
 app.use(cors({ origin: env.CORS_ORIGIN }));
