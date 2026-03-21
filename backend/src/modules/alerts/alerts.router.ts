@@ -4,6 +4,16 @@ import { authenticate } from "../../middlewares/authenticate";
 
 export const alertsRouter = Router();
 
-alertsRouter.get("/",authenticate, alertsController.getAlerts);
-alertsRouter.post("/",authenticate, alertsController.createAlert);
-alertsRouter.patch("/:id/deactivate",authenticate, alertsController.deactivateAlert);
+alertsRouter.get("/", authenticate, alertsController.getAlerts);
+alertsRouter.post("/", authenticate, alertsController.createAlert);
+alertsRouter.patch(
+  "/:id/deactivate",
+  authenticate,
+  alertsController.deactivateAlert,
+);
+alertsRouter.patch(
+  "/:id/reactivate",
+  authenticate,
+  alertsController.reactivateAlert,
+);
+alertsRouter.delete("/:id", authenticate, alertsController.deleteAlert);

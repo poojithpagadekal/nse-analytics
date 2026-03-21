@@ -41,8 +41,28 @@ const deactivateAlert = asyncHandler(async (req: Request, res: Response) => {
   res.status(200).json(alert);
 });
 
+const reactivateAlert = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = alertParamSchema.parse(req.params);
+  const alert = await alertsService.reactivateAlert(
+    (req as AuthRequest).userId,
+    id,
+  );
+  res.status(200).json(alert);
+});
+
+const deleteAlert = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = alertParamSchema.parse(req.params);
+  const result = await alertsService.deleteAlert(
+    (req as AuthRequest).userId,
+    id,
+  );
+  res.status(200).json(result);
+});
+
 export const alertsController = {
   getAlerts,
   createAlert,
   deactivateAlert,
+  reactivateAlert,
+  deleteAlert,
 };

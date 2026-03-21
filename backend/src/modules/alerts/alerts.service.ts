@@ -46,8 +46,34 @@ const deactivateAlert = async (userId: number, id: number) => {
   });
 };
 
+const deleteAlert = async (userId: number, id: number) => {
+  const alert = await prisma.alert.findUnique({ where: { id } });
+
+  if (!alert) throw new NotFoundError(`Alert ${id}`);
+
+  if (alert.userId !== userId) {
+    throw new AppError("Forbidden", 403);
+  }
+
+  await prisma.alert.delete({ where: { id } });
+  return { message: "Alert deleted" };
+};
+
+const reactivateAlert = async (userId: number, id: number) => {
+  const alert = await prisma.alert.findUnique({ where: { id } });
+  if (!alert) throw new NotFoundError(`Alert ${id}`);
+  if (alert.userId !== userId) throw new AppError("Forbidden", 403);
+
+  return prisma.alert.update({
+    where: { id },
+    data: { isActive: true },
+  });
+};
+
 export const alertsService = {
   getAlerts,
   createAlert,
   deactivateAlert,
+  deleteAlert,
+  reactivateAlert,
 };
