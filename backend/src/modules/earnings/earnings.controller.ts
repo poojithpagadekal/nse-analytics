@@ -11,7 +11,7 @@ import {
 const getEarningsBySymbol = asyncHandler(
   async (req: Request, res: Response) => {
     const { symbol } = earningParamSchema.parse(req.params);
-    const { quarter } = earningQuerySchema.parse(req.params);
+    const { quarter } = earningQuerySchema.parse(req.query);
 
     const earnings = await earningsService.getEarningsBySymbol(symbol, quarter);
     res.status(200).json(earnings);
