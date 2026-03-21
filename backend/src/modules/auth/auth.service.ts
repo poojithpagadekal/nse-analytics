@@ -1,7 +1,8 @@
 import { prisma } from "../../config/prisma";
-import { AppError, ValidationError } from "../../lib/errors";
+import { AppError } from "../../lib/errors";
 import * as jwt from "jsonwebtoken";
-import { SignOptions } from "jsonwebtoken";
+import { Secret } from "jsonwebtoken";
+import type { StringValue } from "ms";
 import bcrypt from "bcryptjs";
 import {
   ChangeEmailInput,
@@ -127,8 +128,8 @@ const changeEmail = async (userId: number, data: ChangeEmailInput) => {
 };
 
 function generateToken(userId: number): string {
-  return jwt.sign({ userId }, env.JWT_SECRET, {
-    expiresIn: env.JWT_EXPIRES_IN as any,
+  return jwt.sign({ userId }, env.JWT_SECRET as Secret, {
+    expiresIn: env.JWT_EXPIRES_IN as StringValue,
   });
 }
 
