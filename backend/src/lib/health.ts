@@ -7,7 +7,7 @@ export const healthRouter = Router();
 healthRouter.get("/", async (_req: Request, res: Response) => {
   const checks = {
     status: "ok",
-    timestamp: new Date().toISOString,
+    timestamp: new Date().toISOString(),
     services: {
       postgres: "unknown",
       redis: "unknown",
