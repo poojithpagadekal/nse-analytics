@@ -1,9 +1,14 @@
 import { prisma } from "../../config/prisma";
-import { AppError } from "../../lib/errors";
+import { AppError, ValidationError } from "../../lib/errors";
 import * as jwt from "jsonwebtoken";
 import { SignOptions } from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { RegisterInput } from "./auth.schema";
+import {
+  ChangeEmailInput,
+  ChangePasswordInput,
+  RegisterInput,
+  UdpateProfileInput,
+} from "./auth.schema";
 import { env } from "../../config/env";
 import { LoginInput } from "./auth.schema";
 
@@ -55,6 +60,72 @@ const login = async (data: LoginInput) => {
   return { user: otherFields, token };
 };
 
+const getMe = async (userId: number) => {
+  return prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      createdAt: true,
+    },
+  });
+};
+
+const updateProfile = async (userId: number, data: UdpateProfileInput) => {
+  return prisma.user.update({
+    where: { id: userId },
+    data: { name: data.name },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      createdAt: true,
+    },
+  });
+};
+
+const changePassword = async (userId: number, data: ChangePasswordInput) => {
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user) throw new AppError("User not found", 404);
+
+  const isValid = await bcrypt.compare(data.currentPassword, user.password);
+  if (!isValid) throw new AppError("Current password is incorrect", 400);
+
+  const hashed = await bcrypt.hash(data.newPassword, SALT_ROUNDS);
+  await prisma.user.update({
+    where: { id: userId },
+    data: { password: hashed },
+  });
+
+  return { message: "Password updated successfully" };
+};
+
+const changeEmail = async (userId: number, data: ChangeEmailInput) => {
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user) throw new AppError("User not found", 404);
+
+  const isValid = await bcrypt.compare(data.password, user.password);
+  if (!isValid) throw new AppError("Password is incorrect", 400);
+
+  const existing = await prisma.user.findUnique({
+    where: { email: data.newEmail },
+  });
+
+  if (existing) throw new AppError("Email already in use", 409);
+
+  return prisma.user.update({
+    where: { id: userId },
+    data: { email: data.newEmail },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      createdAt: true,
+    },
+  });
+};
+
 function generateToken(userId: number): string {
   return jwt.sign({ userId }, env.JWT_SECRET, {
     expiresIn: env.JWT_EXPIRES_IN as any,
@@ -64,4 +135,8 @@ function generateToken(userId: number): string {
 export const authService = {
   register,
   login,
+  getMe,
+  updateProfile,
+  changePassword,
+  changeEmail,
 };
