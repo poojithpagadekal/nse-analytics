@@ -77,8 +77,11 @@ model Alert {
   triggeredAt DateTime?
   createdAt   DateTime  @default(now())
   stock       Stock     @relation(fields: [stockId], references: [id])
-  user        User?     @relation(fields: [userId], references: [id])
+  user        User      @relation(fields: [userId], references: [id])
   userId      Int
+
+  @@index([userId])
+  @@index([stockId])
 }
 
 model User {
