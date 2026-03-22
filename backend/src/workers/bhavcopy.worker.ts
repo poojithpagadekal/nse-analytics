@@ -6,6 +6,7 @@ import {
   BhavcopyJobData,
 } from "./processors/bhavcopy.processor";
 import { getSocket } from "../config/socket";
+import { evaluateAlerts } from "./processors/alert-evaluator.processor";
 
 export const bhavcopyWorker = new Worker<BhavcopyJobData>(
   BHAVCOPY_QUEUE,
@@ -14,6 +15,7 @@ export const bhavcopyWorker = new Worker<BhavcopyJobData>(
 
     await job.updateProgress(0);
     await processBhavcopyJob(job.data);
+    await evaluateAlerts(job.data.date);
     await job.updateProgress(100);
 
     getSocket().emit(`prices:updated`, { date: job.data.date });

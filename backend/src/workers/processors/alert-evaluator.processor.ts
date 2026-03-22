@@ -1,7 +1,7 @@
 import { prisma } from "../../config/prisma";
 import { getSocket } from "../../config/socket";
 
-export const evaluateAlert = async (date: string): Promise<void> => {
+export const evaluateAlerts = async (date: string): Promise<void> => {
   const alerts = await prisma.alert.findMany({
     where: {
       isActive: true,
