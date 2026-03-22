@@ -3,6 +3,7 @@ import { z } from "zod";
 import { asyncHandler } from "./errorHandler";
 import { ValidationError } from "./errors";
 import { bhavcopyQueue } from "../workers/queues/bhavcopy.queue";
+import { authenticate } from "../middlewares/authenticate";
 
 const ingestSchema = z.object({
   date: z
@@ -14,6 +15,7 @@ export const ingestRouter = Router();
 
 ingestRouter.post(
   "/bhavcopy",
+  authenticate,
   asyncHandler(async (req: Request, res: Response) => {
     const parsed = ingestSchema.safeParse(req.body);
 
