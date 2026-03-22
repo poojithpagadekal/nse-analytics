@@ -15,8 +15,18 @@ export function OHLCStats({ data }: OHLCStatsProps) {
   const latest = data[data.length - 1];
   const stats = [
     { label: "Open", value: formatPrice(latest.open) },
-    { label: "High", value: formatPrice(Math.max(...data.map((d) => d.high))) },
-    { label: "Low", value: formatPrice(Math.min(...data.map((d) => d.low))) },
+    {
+      label: "High",
+      value: formatPrice(
+        data.reduce((max, d) => (d.high > max ? d.high : max), data[0].high),
+      ),
+    },
+    {
+      label: "Low",
+      value: formatPrice(
+        data.reduce((min, d) => (d.low < min ? d.low : min), data[0].low),
+      ),
+    },
     { label: "Close", value: formatPrice(latest.close) },
   ];
 
