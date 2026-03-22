@@ -1,18 +1,7 @@
 import { Bell, BellOff, CheckCircle, Trash2, RefreshCw } from "lucide-react";
 import type { Alert } from "../../types";
-
-const ALERT_TYPES: Record<string, string> = {
-  EPS_GROWTH: "EPS Growth",
-  REVENUE_GROWTH: "Revenue Growth",
-  PATTERN_DETECTED: "Pattern Detected",
-  PRICE_CHANGE: "Price Change",
-};
-
-const CONDITIONS: Record<string, string> = {
-  GT: "Greater than",
-  LT: "Less than",
-  EQ: "Equal to",
-};
+// Value import (no "type" keyword) — these are runtime objects, not just types
+import { ALERT_TYPE_LABELS, CONDITION_LABELS } from "./alerts.constants";
 
 interface AlertCardProps {
   alert: Alert;
@@ -35,6 +24,7 @@ export function AlertCard({
           : "border-gray-100 hover:border-emerald-200 hover:shadow-sm"
       }`}
     >
+      {/* Left — icon + label */}
       <div className="flex items-center gap-4">
         <div
           className={`w-9 h-9 rounded-xl flex items-center justify-center ${
@@ -47,6 +37,7 @@ export function AlertCard({
             <BellOff className="h-4 w-4 text-gray-400" />
           )}
         </div>
+
         <div>
           <div className="flex items-center gap-2 mb-0.5">
             <span className="text-sm font-bold text-gray-900 font-mono">
@@ -54,7 +45,10 @@ export function AlertCard({
             </span>
             <span className="text-xs text-gray-400">·</span>
             <span className="text-xs text-gray-500">
-              {ALERT_TYPES[alert.type] ?? alert.type}
+              {/* Fallback to raw value if somehow an unknown type appears */}
+              {ALERT_TYPE_LABELS[
+                alert.type as keyof typeof ALERT_TYPE_LABELS
+              ] ?? alert.type}
             </span>
             {!alert.isActive && (
               <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
@@ -63,7 +57,9 @@ export function AlertCard({
             )}
           </div>
           <p className="text-xs text-gray-400">
-            {CONDITIONS[alert.condition] ?? alert.condition}{" "}
+            {CONDITION_LABELS[
+              alert.condition as keyof typeof CONDITION_LABELS
+            ] ?? alert.condition}{" "}
             <span className="font-mono font-medium text-gray-600">
               {alert.threshold}
             </span>
@@ -71,6 +67,7 @@ export function AlertCard({
         </div>
       </div>
 
+      {/* Right — action buttons */}
       <div className="flex items-center gap-2">
         {alert.triggeredAt && (
           <div className="flex items-center gap-1.5 text-xs text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
