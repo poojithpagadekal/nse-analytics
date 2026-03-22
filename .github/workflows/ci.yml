@@ -22,5 +22,8 @@ jobs:
       - name: Install dependencies
         run: cd backend && npm ci
 
+      - name: Generate Prisma client   # add this step
+        run: cd backend && npx prisma generate
+
       - name: Type check
         run: cd backend && npx tsc --noEmit
