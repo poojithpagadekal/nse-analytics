@@ -15,6 +15,12 @@ export function initSocket(httpServer: HttpServer): Server {
   io.on("connection", (socket) => {
     console.log(`[Socket.io] Client connected: ${socket.id}`);
 
+    socket.on("join:user", (userId: number) => {
+      const room = `user:${userId}`;
+      socket.join(room);
+      console.log(`[Socket.io] ${socket.id} joined room ${room}`);
+    });
+
     socket.on("disconnect", () => {
       console.log(`[Socket.io] Client disconnected: ${socket.id}`);
     });
