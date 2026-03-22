@@ -1,7 +1,9 @@
+import { useState, useCallback } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import { BarChart2, TrendingUp, Bell, User, LogOut } from "lucide-react";
 import { useSocket } from "../hooks/useSocket";
 import { useLogout, getStoredUser } from "../hooks/useAuth";
+import { ToastContainer, type ToastData } from "./ui/Toast";
 
 const navItems = [
   { to: "/stocks", label: "Stocks", icon: TrendingUp },
@@ -10,9 +12,22 @@ const navItems = [
 ];
 
 export function Layout() {
-  useSocket();
+  const [toasts, setToasts] = useState<ToastData[]>([]);
   const logout = useLogout();
   const user = getStoredUser();
+
+  const handleAlertTriggered = useCallback((data: ToastData) => {
+    setToasts((prev) => [
+      ...prev,
+      { ...data, id: data.id ?? String(Date.now()) },
+    ]);
+  }, []);
+
+  const dismissToast = useCallback((id: string) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  }, []);
+
+  useSocket(handleAlertTriggered);
 
   return (
     <div className="flex min-h-screen bg-[#f6f7f9]">
@@ -30,10 +45,10 @@ export function Layout() {
               key={to}
               to={to}
               className={({ isActive }) =>
-                `flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium no-underline mb-1 transition-colors duration-150 ${
+                `flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium no-underline mb-1 transition-colors duration-150 border-l-2 ${
                   isActive
-                    ? "bg-[#f0fdf8] text-[#00c896]"
-                    : "text-gray-500 hover:bg-gray-50 hover:text-gray-800"
+                    ? "bg-[#f0fdf8] text-[#00c896] border-[#00c896]"
+                    : "text-gray-500 hover:bg-gray-50 hover:text-gray-800 border-transparent"
                 }`
               }
             >
@@ -68,6 +83,8 @@ export function Layout() {
       <main className="ml-[220px] flex-1 min-h-screen">
         <Outlet />
       </main>
+
+      <ToastContainer toasts={toasts} onDismiss={dismissToast} />
     </div>
   );
 }

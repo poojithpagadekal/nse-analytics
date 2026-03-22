@@ -24,7 +24,6 @@ export function AlertCard({
           : "border-gray-100 hover:border-emerald-200 hover:shadow-sm"
       }`}
     >
-      {/* Left — icon + label */}
       <div className="flex items-center gap-4">
         <div
           className={`w-9 h-9 rounded-xl flex items-center justify-center ${
@@ -45,7 +44,6 @@ export function AlertCard({
             </span>
             <span className="text-xs text-gray-400">·</span>
             <span className="text-xs text-gray-500">
-              {/* Fallback to raw value if somehow an unknown type appears */}
               {ALERT_TYPE_LABELS[
                 alert.type as keyof typeof ALERT_TYPE_LABELS
               ] ?? alert.type}
@@ -67,7 +65,6 @@ export function AlertCard({
         </div>
       </div>
 
-      {/* Right — action buttons */}
       <div className="flex items-center gap-2">
         {alert.triggeredAt && (
           <div className="flex items-center gap-1.5 text-xs text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
