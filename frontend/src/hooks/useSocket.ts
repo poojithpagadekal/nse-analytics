@@ -8,17 +8,18 @@ export function useSocket() {
   useEffect(() => {
     socket.connect();
 
-    socket.on("connect", () => {
-      console.log("[Socket] Connected:", socket.id);
-    });
-
-    socket.on("prices:updated", () => {
+    const onConnect = () => console.log("[Socket] Connected:", socket.id);
+    const onPricesUpdated = () => {
       queryClient.invalidateQueries({ queryKey: ["stocks"] });
       queryClient.invalidateQueries({ queryKey: ["prices"] });
-    });
+    };
+
+    socket.on("connect", onConnect);
+    socket.on("prices:updated", onPricesUpdated);
 
     return () => {
-      socket.off("prices:updated");
+      socket.off("connect", onConnect);
+      socket.off("prices:updated", onPricesUpdated);
       socket.disconnect();
     };
   }, [queryClient]);

@@ -9,10 +9,10 @@ export interface Stock {
 
 export interface DailyPrice {
   date: string;
-  open: number;
-  high: number;
-  low: number;
-  close: number;
+  open: string;
+  high: string;
+  low: string;
+  close: string;
   volume: string;
 }
 

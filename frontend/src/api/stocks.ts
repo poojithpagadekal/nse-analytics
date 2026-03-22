@@ -17,7 +17,7 @@ export const stocksApi = {
     from?: string,
     to?: string,
   ): Promise<DailyPrice[]> => {
-    const { data } = await apiClient.get(`stocks/${symbol}/prices`, {
+    const { data } = await apiClient.get(`/stocks/${symbol}/prices`, {
       params: { from, to },
     });
     return data;

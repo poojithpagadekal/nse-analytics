@@ -39,8 +39,13 @@ export function useLogout() {
 }
 
 export function getStoredUser() {
-  const user = localStorage.getItem("user");
-  return user ? JSON.parse(user) : null;
+  try {
+    const user = localStorage.getItem("user");
+    return user ? JSON.parse(user) : null;
+  } catch {
+    localStorage.removeItem("user");
+    return null;
+  }
 }
 
 export function isAuthenticated() {
