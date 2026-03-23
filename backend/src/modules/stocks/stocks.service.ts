@@ -4,6 +4,13 @@ import { Prisma } from "@prisma/client";
 const getAllStocks = async () => {
   return prisma.stock.findMany({
     orderBy: { symbol: "asc" },
+    include: {
+      dailyPrices: {
+        orderBy: { date: "desc" },
+        take: 2,
+        select: { close: true, date: true },
+      },
+    },
   });
 };
 
