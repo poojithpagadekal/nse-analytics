@@ -26,6 +26,8 @@ export function StockHeader({
   latestPrice,
   priceChange,
 }: StockHeaderProps) {
+  const hasRealName = name && name !== symbol;
+
   return (
     <div className="flex items-start justify-between mb-8">
       <div>
@@ -39,7 +41,8 @@ export function StockHeader({
             </span>
           )}
         </div>
-        <p className="text-sm text-gray-400">{name}</p>
+
+        {hasRealName && <p className="text-sm text-gray-400">{name}</p>}
       </div>
 
       <div className="text-right">
