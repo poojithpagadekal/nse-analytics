@@ -5,6 +5,10 @@ export interface Stock {
   sector: string | null;
   industry: string | null;
   createdAt: string;
+  dailyPrices: {
+    close: string;
+    date: string;
+  }[];
 }
 
 export interface DailyPrice {
