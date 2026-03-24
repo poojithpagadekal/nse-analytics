@@ -23,7 +23,7 @@ export const createEarningSchema = z.object({
     .number()
     .optional()
     .transform((v) => v ?? null),
-  announcedAt: z.string().datetime(),
+  announcedAt: z.string().date(),
 });
 
 export const earningQuerySchema = z.object({
