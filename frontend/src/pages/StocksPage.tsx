@@ -1,7 +1,3 @@
-// StocksPage is now purely a page composition file.
-// Business logic lives in hooks, UI pieces live in components.
-// This file only handles: fetching, filtering, paginating, and rendering.
-
 import { useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, TrendingUp } from "lucide-react";
@@ -27,8 +23,15 @@ export function StocksPage() {
     );
   }, [stocks, query]);
 
-  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
-  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const totalPages = useMemo(
+    () => Math.ceil(filtered.length / PAGE_SIZE),
+    [filtered.length],
+  );
+
+  const paginated = useMemo(
+    () => filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
+    [filtered, page],
+  );
 
   const handleSearch = useCallback((val: string) => {
     setQuery(val);
@@ -89,20 +92,20 @@ export function StocksPage() {
         </p>
       )}
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 mb-8">
-        {paginated.map((stock) => (
-          <StockCard
-            key={stock.id}
-            symbol={stock.symbol}
-            name={stock.name}
-            sector={stock.sector}
-            dailyPrices={stock.dailyPrices}
-            onClick={() => navigate(`/stocks/${stock.symbol}`)}
-          />
-        ))}
-      </div>
-
-      {filtered.length === 0 && (
+      {paginated.length > 0 ? (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 mb-8">
+          {paginated.map((stock) => (
+            <StockCard
+              key={stock.id}
+              symbol={stock.symbol}
+              name={stock.name}
+              sector={stock.sector}
+              dailyPrices={stock.dailyPrices}
+              onClick={() => navigate(`/stocks/${stock.symbol}`)}
+            />
+          ))}
+        </div>
+      ) : (
         <div className="text-center py-16">
           <p className="text-3xl mb-3">🔍</p>
           <p className="text-sm font-medium text-gray-600">No stocks found</p>
