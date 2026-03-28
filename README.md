@@ -30,7 +30,7 @@ NSE publishes daily market data as public CSV files. I wanted to build something
 - **Daily stock data** — automatically ingests NSE Bhavcopy CSV data every weekday at 7pm IST via a scheduled BullMQ job
 - **Price charts** — interactive OHLC charts with 1W / 1M / 3M / 1Y range selection
 - **Earnings history** — quarterly revenue, net profit, EPS, and YoY growth per stock
-- **Price alerts** — set threshold-based alerts that evaluate against daily closing prices and notify in near real-time via WebSocket
+- **Price alerts** — set threshold-based alerts evaluated against EOD closing prices after daily ingestion; triggered alerts are pushed instantly to the browser via Socket.io
 - **Auth** — JWT-based authentication with register, login, profile management, and password/email change
 
 ---
